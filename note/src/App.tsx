@@ -1,5 +1,6 @@
 import { CalendarDays, Pencil, Plus, Search, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 const getCurrentDate = () => {
   const options: Intl.DateTimeFormatOptions = {
@@ -12,9 +13,29 @@ const getCurrentDate = () => {
 
 const App = () => {
   const [isDropDown, setIsDropDown] = useState(false);
+  const [box, setBox] = useState<string[]>([]);
+
+  useEffect(() => {
+    const savedBoxes = localStorage.getItem("boxes");
+    if (savedBoxes) {
+      setBox(JSON.parse(savedBoxes));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("boxes", JSON.stringify(box));
+  }, [box]);
 
   const handlerDropDown = () => {
     setIsDropDown(!isDropDown);
+  };
+
+  const handlerBox = (color: string) => {
+    setBox((prev) => [...prev, color]);
+  };
+
+  const handlerDelete = (idx: number) => {
+    setBox(box.filter((_, id) => id != idx));
   };
 
   return (
@@ -29,13 +50,34 @@ const App = () => {
             <Plus />
           </div>
           {isDropDown && (
-            <div className="flex flex-col gap-4">
-              <div className="cursor-pointer h-5 w-5 bg-red-300 rounded-full"></div>
-              <div className="cursor-pointer h-5 w-5 bg-green-300 rounded-full"></div>
-              <div className="cursor-pointer h-5 w-5 bg-purple-300 rounded-full"></div>
-              <div className="cursor-pointer h-5 w-5 bg-yellow-300 rounded-full"></div>
-              <div className="cursor-pointer h-5 w-5 bg-blue-300 rounded-full"></div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: -40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -40 }}
+              transition={{ duration: 0.7 }}
+              className="flex flex-col gap-4"
+            >
+              <div
+                onClick={() => handlerBox("bg-red-300")}
+                className="cursor-pointer h-5 w-5 bg-red-300 rounded-full"
+              ></div>
+              <div
+                onClick={() => handlerBox("bg-green-300")}
+                className="cursor-pointer h-5 w-5 bg-green-300 rounded-full"
+              ></div>
+              <div
+                onClick={() => handlerBox("bg-purple-300")}
+                className="cursor-pointer h-5 w-5 bg-purple-300 rounded-full"
+              ></div>
+              <div
+                onClick={() => handlerBox("bg-yellow-300")}
+                className="cursor-pointer h-5 w-5 bg-yellow-300 rounded-full"
+              ></div>
+              <div
+                onClick={() => handlerBox("bg-blue-300")}
+                className="cursor-pointer h-5 w-5 bg-blue-300 rounded-full"
+              ></div>
+            </motion.div>
           )}
         </div>
       </div>
@@ -51,20 +93,34 @@ const App = () => {
         </div>
         <div className="text-6xl tracking-tighter font-semibold">Notes</div>
         <div className="flex flex-wrap gap-5">
-          <div className="px-6 py-3 rounded-2xl bg-green-400 flex flex-col justify-between min-h-40 w-80">
-            <div className="text-md ">Hello How are you lorem500</div>
-            <div className="flex items-center justify-between">
-              <div className="flex gap-2">
-                <CalendarDays /> {getCurrentDate()}
+          {box.map((item, idx) => (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              key={idx}
+              className={`px-6 py-3 rounded-2xl ${item} flex flex-col justify-between min-h-40 w-80`}
+            >
+              <textarea
+                className="text-md outline-none resize-none w-full h-24 p-3 rounded-lg"
+                placeholder="Enter Your Notes"
+              ></textarea>
+              <div className="flex items-center justify-between">
+                <div className="flex gap-2">
+                  <CalendarDays /> {getCurrentDate()}
+                </div>
+                <div
+                  onClick={() => handlerDelete(idx)}
+                  className="p-3 cursor-pointer hover:bg-red-600 bg-red-500 rounded-full text-[#fff]"
+                >
+                  <Trash2 />
+                </div>
+                <div className="p-3 cursor-pointer hover:bg-[#1f1e1e] bg-[#000000] rounded-full text-[#fff]">
+                  <Pencil />
+                </div>
               </div>
-              <div className="p-3 cursor-pointer hover:bg-red-600 bg-red-500 rounded-full text-[#fff]">
-                <Trash2 />
-              </div>
-              <div className="p-3 cursor-pointer hover:bg-[#1f1e1e] bg-[#000000] rounded-full text-[#fff]">
-                <Pencil />
-              </div>
-            </div>
-          </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </div>
