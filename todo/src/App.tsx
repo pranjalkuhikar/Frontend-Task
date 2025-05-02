@@ -23,7 +23,11 @@ const App = () => {
         <div className="text-4xl tracking-tighter">To-Do</div>
         <div className="bg-gray-300 w-full h-0.5 rounded-full"></div>
         <div className="flex items-center gap-5">
-          <input type="text" className="border-b-2 border-gray-300 " />
+          <input
+            type="text"
+            placeholder="Add a new task..."
+            className="border-b-2 border-gray-300 outline-none "
+          />
           <button className="flex gap-2 px-5 py-2 bg-blue-600 text-zinc-100 font-semibold rounded-md max-w-fit cursor-pointer active:scale-95 hover:bg-blue-500">
             <CirclePlus /> Add Task
           </button>
