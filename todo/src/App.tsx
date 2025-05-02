@@ -29,6 +29,7 @@ const App = () => {
   const { bgColor, textColor } = randomColor();
   const [task, setTask] = useState<{ task: string }>({ task: "" });
   const [data, setData] = useState<{ task: string }[]>([]);
+  const [complete, setComplete] = useState<boolean[]>([]);
 
   const handlerChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTask({ ...task, [e.target.name]: e.target.value });
@@ -42,6 +43,14 @@ const App = () => {
       setData([...data, { ...task }]);
       setTask({ task: "" });
     }
+  };
+
+  const handlerComplete = (idx: number) => {
+    setComplete((prev) => {
+      const update = [...prev];
+      update[idx] = !update[idx];
+      return update;
+    });
   };
 
   const handlerDelete = (idx: number) => {
@@ -73,11 +82,17 @@ const App = () => {
               className="border border-gray-300 rounded-md px-5 py-2 shadow-2xs"
             >
               <div className="flex gap-4 justify-between">
-                <div className="flex items-start gap-4">
+                <div
+                  className={`flex items-start gap-4 ${
+                    complete[idx] ? "line-through text-gray-500" : ""
+                  } `}
+                >
                   <input
                     type="checkbox"
                     name=""
                     id=""
+                    checked={complete[idx] || false}
+                    onChange={() => handlerComplete(idx)}
                     className="mt-1.5 h-5 w-5 text-green-600 focus:ring-green-500"
                   />
                   <div className="flex flex-col gap-1.5">
