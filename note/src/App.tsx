@@ -17,7 +17,6 @@ const App = () => {
   const [search, setSearch] = useState({ search: "" });
   const [filter, setFilter] = useState<{ color: string; text: string }[]>([]);
 
-  // Load data from localStorage on component mount
   useEffect(() => {
     const savedBoxes = localStorage.getItem("boxes");
     if (savedBoxes) {
@@ -25,14 +24,12 @@ const App = () => {
     }
   }, []);
 
-  // Save data to localStorage whenever `box` changes
   useEffect(() => {
     if (box.length > 0) {
       localStorage.setItem("boxes", JSON.stringify(box));
     }
   }, [box]);
 
-  // Update the filter state whenever the search input changes
   useEffect(() => {
     setFilter(
       box.filter((item) =>
