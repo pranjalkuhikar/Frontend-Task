@@ -1,5 +1,5 @@
-import { CalendarDays, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { CalendarDays, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 const getCurrentDate = () => {
@@ -14,7 +14,10 @@ const getCurrentDate = () => {
 const App = () => {
   const [isDropDown, setIsDropDown] = useState(false);
   const [box, setBox] = useState<{ color: string; text: string }[]>([]);
+  const [search, setSearch] = useState({ search: "" });
+  const [filter, setFilter] = useState<{ color: string; text: string }[]>([]);
 
+  // Load data from localStorage on component mount
   useEffect(() => {
     const savedBoxes = localStorage.getItem("boxes");
     if (savedBoxes) {
@@ -22,11 +25,21 @@ const App = () => {
     }
   }, []);
 
+  // Save data to localStorage whenever `box` changes
   useEffect(() => {
     if (box.length > 0) {
       localStorage.setItem("boxes", JSON.stringify(box));
     }
   }, [box]);
+
+  // Update the filter state whenever the search input changes
+  useEffect(() => {
+    setFilter(
+      box.filter((item) =>
+        item.text.toLowerCase().includes(search.search.toLowerCase())
+      )
+    );
+  }, [search, box]);
 
   const handlerDropDown = () => {
     setIsDropDown(!isDropDown);
@@ -35,23 +48,34 @@ const App = () => {
   const handlerBox = (color: string) => {
     setBox((prev) => [...prev, { color, text: "" }]);
   };
+
   const handleTextChange = (idx: number, newText: string) => {
     setBox((prev) =>
       prev.map((item, id) => (id === idx ? { ...item, text: newText } : item))
     );
   };
+
+  const handlerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
   const handlerDelete = (idx: number) => {
-    setBox(box.filter((_, id) => id != idx));
+    const updatedBoxes = box.filter((_, id) => id !== idx);
+    setBox(updatedBoxes);
+    localStorage.setItem("boxes", JSON.stringify(updatedBoxes));
   };
 
   return (
     <div className="font-[mona_sans] flex gap-10">
-      <div className="flex flex-col  p-6  items-center gap-10 ">
+      <div className="flex flex-col p-6 items-center gap-10">
         <h1 className="text-lg font-semibold tracking-tighter">Docket</h1>
         <div className="flex flex-col items-center gap-5">
           <div
             onClick={handlerDropDown}
-            className="p-3 bg-[#121212] text-[#fff] cursor-pointer active:scale-95 hover:bg-zinc-800 rounded-full "
+            className="p-3 bg-[#121212] text-[#fff] cursor-pointer active:scale-95 hover:bg-zinc-800 rounded-full"
           >
             <Plus />
           </div>
@@ -95,11 +119,14 @@ const App = () => {
             type="text"
             placeholder="Search"
             className="px-5 py-2 outline-none"
+            name="search"
+            value={search.search}
+            onChange={handlerChange}
           />
         </div>
         <div className="text-6xl tracking-tighter font-semibold">Notes</div>
         <div className="flex flex-wrap gap-5">
-          {box.map((item, idx) => (
+          {filter.map((item, idx) => (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
