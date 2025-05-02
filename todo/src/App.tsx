@@ -39,9 +39,6 @@ const App = () => {
     e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>
   ) => {
     e.preventDefault();
-    if (task.task.trim() === "") {
-      alert("Please fill the Input");
-    }
     if (task.task.trim() !== "") {
       setData([...data, { ...task }]);
       setTask({ task: "" });
