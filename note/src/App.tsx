@@ -1,4 +1,5 @@
 import { CalendarDays, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 const getCurrentDate = () => {
   const options: Intl.DateTimeFormatOptions = {
@@ -10,13 +11,33 @@ const getCurrentDate = () => {
 };
 
 const App = () => {
+  const [isDropDown, setIsDropDown] = useState(false);
+
+  const handlerDropDown = () => {
+    setIsDropDown(!isDropDown);
+  };
+
   return (
     <div className="font-[mona_sans] flex gap-10">
       <div className="flex flex-col  p-6  items-center gap-10 ">
         <h1 className="text-lg font-semibold tracking-tighter">Docket</h1>
-        <p className="p-3 bg-[#121212] text-[#fff] rounded-full ">
-          <Plus />
-        </p>
+        <div className="flex flex-col items-center gap-5">
+          <div
+            onClick={handlerDropDown}
+            className="p-3 bg-[#121212] text-[#fff] cursor-pointer active:scale-95 hover:bg-zinc-800 rounded-full "
+          >
+            <Plus />
+          </div>
+          {isDropDown && (
+            <div className="flex flex-col gap-4">
+              <div className="cursor-pointer h-5 w-5 bg-red-300 rounded-full"></div>
+              <div className="cursor-pointer h-5 w-5 bg-green-300 rounded-full"></div>
+              <div className="cursor-pointer h-5 w-5 bg-purple-300 rounded-full"></div>
+              <div className="cursor-pointer h-5 w-5 bg-yellow-300 rounded-full"></div>
+              <div className="cursor-pointer h-5 w-5 bg-blue-300 rounded-full"></div>
+            </div>
+          )}
+        </div>
       </div>
       <div className="h-screen w-0.5 bg-gray-400"></div>
       <div className="p-6 flex flex-col gap-12">
