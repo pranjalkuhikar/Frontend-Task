@@ -13,7 +13,7 @@ const getCurrentDate = () => {
 
 const App = () => {
   const [isDropDown, setIsDropDown] = useState(false);
-  const [box, setBox] = useState<string[]>([]);
+  const [box, setBox] = useState<{ color: string; text: string }[]>([]);
 
   useEffect(() => {
     const savedBoxes = localStorage.getItem("boxes");
@@ -23,7 +23,9 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("boxes", JSON.stringify(box));
+    if (box.length > 0) {
+      localStorage.setItem("boxes", JSON.stringify(box));
+    }
   }, [box]);
 
   const handlerDropDown = () => {
@@ -31,9 +33,13 @@ const App = () => {
   };
 
   const handlerBox = (color: string) => {
-    setBox((prev) => [...prev, color]);
+    setBox((prev) => [...prev, { color, text: "" }]);
   };
-
+  const handleTextChange = (idx: number, newText: string) => {
+    setBox((prev) =>
+      prev.map((item, id) => (id === idx ? { ...item, text: newText } : item))
+    );
+  };
   const handlerDelete = (idx: number) => {
     setBox(box.filter((_, id) => id != idx));
   };
@@ -99,11 +105,13 @@ const App = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
               key={idx}
-              className={`px-6 py-3 rounded-2xl ${item} flex flex-col justify-between min-h-40 w-80`}
+              className={`px-6 py-3 rounded-2xl ${item.color} flex flex-col justify-between min-h-40 w-80`}
             >
               <textarea
                 className="text-md outline-none resize-none w-full h-24 p-3 rounded-lg"
                 placeholder="Enter Your Notes"
+                value={item.text}
+                onChange={(e) => handleTextChange(idx, e.target.value)}
               ></textarea>
               <div className="flex items-center justify-between">
                 <div className="flex gap-2">
