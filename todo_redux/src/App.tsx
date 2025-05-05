@@ -17,14 +17,18 @@ const App = () => {
             </div>
           </div>
           <div>
-            <div>
-              <div>
-                <div>
-                  <input type="checkbox" name="" id="" />
-                </div>
-                <div>Finding user onboarding</div>
+            <div className="flex justify-between border-[1px] border-gray-400 px-5 py-5 rounded-xl">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="task-checkbox"
+                  className="w-5 h-5 accent-blue-500 rounded cursor-pointer"
+                />
+                <label htmlFor="task-checkbox" className="cursor-pointer">
+                  Finding user onboarding
+                </label>
               </div>
-              <div>
+              <div className="cursor-pointer px-5 py-2 active:scale-95">
                 <Trash2 />
               </div>
             </div>
