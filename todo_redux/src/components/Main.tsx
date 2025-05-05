@@ -1,7 +1,7 @@
 import { CirclePlus, Trash2 } from "lucide-react";
 import Navbar from "./Navbar";
 import { useState } from "react";
-import { RootState } from "@reduxjs/toolkit/query";
+import { RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { addTodo, toggleTodo, deleteTodo } from "../features/todoSlice";
 
@@ -36,6 +36,7 @@ const Main = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Add a new todo"
+            className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
           <div
             onClick={handleAddTodo}
@@ -45,7 +46,7 @@ const Main = () => {
             Add Task
           </div>
         </div>
-        <div>
+        <div className="flex flex-col gap-4">
           {todos.map((todo: Todo) => (
             <div className="flex justify-between border-[1px] border-gray-400 px-5 py-5 rounded-xl">
               <div
